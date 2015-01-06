@@ -1,3 +1,44 @@
-<h3>Game template</h3>
+<h3>Let's play Blackjack!</h3>
 
-<p>Here is text from a template!</p>
+<% if @play_again %>
+  <p><h5>Would <%= session[:player_name] %> like to play again?</h5>
+  <a href='/bet' class='btn btn-primary'>Yes</a>
+  <a href='/game_over' class='btn'>No</a></p>
+<% end %>
+
+<div class="well">
+  <h4>Dealer's cards:</h4>
+  <% if @player_turn %>
+    <img class="card_image" src="/images/cards/cover.jpg">
+    <img class="card_image" src="/images/cards/<%= session[:dealer_hand][1][0].downcase %>_<%= session[:dealer_hand][1][1].to_s.downcase %>.jpg">
+  <% else %>
+    <% session[:dealer_hand].each do |card| %>
+      <img class="card_image" src="/images/cards/<%= card[0].downcase %>_<%= card[1].to_s.downcase %>.jpg">
+    <% end %>
+  <% end %>
+  <% if @dealer_turn %>
+    <h4>Dealer has <%= calculate_total(session[:dealer_hand]) %> and will hit.</h4>
+    <form action='/dealer/hit' method='post'>
+      <input type='submit' value="Click to see dealer's next card" class='btn btn-primary'>
+    </form>
+  <% end %>
+</div>
+
+<div class="well">
+  <h4><%= session[:player_name] %>'s cards:</h4>
+  <% session[:player_hand].each do |card| %>
+    <img class="card_image" src="/images/cards/<%= card[0].downcase %>_<%= card[1].to_s.downcase %>.jpg">
+  <% end %>
+</div>
+
+<% if @player_turn %>
+  <h4><%= session[:player_name] %> has <%= calculate_total(session[:player_hand]) %> and has bet $<%= session[:bet_amount] %>. What would <%= session[:player_name] %> like to do?</h4>
+  <form class='form_button' action='/hit' method='post'>
+    <input type='submit' value='Hit' class='btn btn-success'>
+  </form>
+  <form class='form_button' action='/stay' method='post'>
+    <input type='submit' value='Stay' class='btn btn-warning'>
+  </form>
+<% else %>
+  <h4><%= session[:player_name] %> has a total of <%= calculate_total(session[:player_hand]) %>. <%= session[:player_name] %> has bet $<%= session[:bet_amount] %>.</h4>
+<% end %>
