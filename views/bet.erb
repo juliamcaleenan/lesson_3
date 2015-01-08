@@ -1,7 +1,7 @@
 <h3>Welcome to Blackjack, <%= session[:player_name] %>!</h3>
 <h4>Make a bet for this round.</h4>
 <p><%= session[:player_name] %> has $<%= session[:player_money] %> to bet.</p>
-<form action='/get_bet' method='post'>
+<form action='/bet' method='post'>
   <input type='text' name='bet_amount'>
   <br>
   <input type='submit' value='Make bet' class='btn'>

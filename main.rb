@@ -5,6 +5,8 @@ use Rack::Session::Cookie, :key => 'rack.session',
                            :path => '/',
                            :secret => '93jf73heiw0' 
 
+INITIAL_POT_AMOUNT = 500
+
 helpers do
   def calculate_total(hand)
     total = 0
@@ -51,11 +53,8 @@ before do
 end
 
 get '/' do 
-  if session[:player_name]
-    redirect '/bet'
-  else
-    erb :set_name
-  end
+  session[:player_money] = INITIAL_POT_AMOUNT
+  erb :set_name
 end
 
 post '/set_name' do
@@ -68,12 +67,15 @@ post '/set_name' do
 end
 
 get '/bet' do
-  session[:player_money] = 500 unless session[:player_money]
+  if session[:player_money] == 0
+    @error = "#{session[:player_name]} has no money left!"
+    halt erb :game_over
+  end
   erb :bet
 end
 
-post '/get_bet' do
-  if (params[:bet_amount].to_i < session[:player_money]) && (params[:bet_amount].to_i > 0)
+post '/bet' do
+  if (params[:bet_amount].to_i <= session[:player_money]) && (params[:bet_amount].to_i > 0)
     session[:bet_amount] = params[:bet_amount].to_i
     redirect '/game'
   elsif params[:bet_amount].to_i > session[:player_money]
