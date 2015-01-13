@@ -28,19 +28,19 @@ helpers do
   end
 
   def winner!(msg)
-    @success = "<strong>#{session[:player_name]} wins!</strong> #{msg}"
+    @winner = "<strong>#{session[:player_name]} wins!</strong> #{msg}"
     @player_turn = false
     @play_again = true
   end
 
   def loser!(msg)
-    @error = "<strong>#{session[:player_name]} loses!</strong> #{msg}"
+    @loser = "<strong>#{session[:player_name]} loses!</strong> #{msg}"
     @player_turn = false
     @play_again = true
   end
 
   def tie!(msg)
-    @info = "<strong>It's a tie!</strong> #{msg}"
+    @tie = "<strong>It's a tie!</strong> #{msg}"
     @player_turn = false
     @play_again = true
   end
@@ -122,7 +122,7 @@ post '/hit' do
     session[:player_money] += session[:bet_amount] * 2
     winner!("#{session[:player_name]} has blackjack! #{session[:player_name]} now has $#{session[:player_money]}.")
   end
-  erb :game
+  erb :game, layout: false
 end
 
 post '/stay' do
@@ -142,7 +142,7 @@ get '/dealer' do
     @dealer_turn = true
   end
   @player_turn = false
-  erb :game
+  erb :game, layout: false
 end
 
 post '/dealer/hit' do
@@ -160,7 +160,7 @@ get '/dealer/stay' do
   else
     tie!("#{session[:player_name]} now has $#{session[:player_money]}.")
   end
-  erb :game  
+  erb :game, layout: false  
 end
 
 get '/game_over' do
